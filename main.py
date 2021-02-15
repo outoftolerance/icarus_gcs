@@ -80,7 +80,7 @@ class MainWindow(QWidget):
         self.timer_internet_status.start(5 * 1000)
 
         # Check timed events once at the start
-        self.on_timer_internet_status()
+        # self.on_timer_internet_status()
 
         # Let's do this!
         self.show()
@@ -118,12 +118,19 @@ class MainWindow(QWidget):
         self.toolbar_status.addWidget(self.toolbutton_heartbeat_status)
 
     def create_map_interface(self):
-        self.map_wrapper = MapWrapper([
-            self.config["Map"]["Home Latitude"],
-            self.config["Map"]["Home Longitude"],
-        ])
-
         self.webengine_map = QWebEngineView()
+
+        self.map_wrapper = MapWrapper(
+            self.webengine_map,
+            {
+                "home_latitude": self.config["Map"]["Home Latitude"],
+                "home_longitude": self.config["Map"]["Home Longitude"],
+                "home_zoom": self.config["Map"]["Zoom Level"],
+                "max_zoom": self.config["Map"]["Max Zoom Level"],
+                "min_zoom": self.config["Map"]["Min Zoom Level"],
+            }
+        )
+
         self.map_view_webchannel = QWebChannel()
         self.map_view_webchannel.registerObject("python_link", self.map_wrapper)
         self.webengine_map.page().setWebChannel(self.map_view_webchannel)
